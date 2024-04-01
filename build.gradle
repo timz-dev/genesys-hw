@@ -1,0 +1,33 @@
+import org.codehaus.groovy.runtime.GStringImpl
+
+plugins {
+    id 'java'
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Selenium
+    implementation 'org.seleniumhq.selenium:selenium-java:4.19.1'
+    // TestNG
+    testImplementation 'org.testng:testng:7.5.1'
+    // Log4j
+    implementation 'org.apache.logging.log4j:log4j-api:2.23.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
+}
+
+ext {
+   chromedriverLocation = System.env.CHROMEDRIVER_LOCATION
+}
+
+test {
+    jvmArgs([
+        "-ea",
+        "-Dwebdriver.chrome.driver=${project.ext.chromedriverLocation}"
+    ])
+    useTestNG() {
+        useDefaultListeners = true
+    }
+}
+
