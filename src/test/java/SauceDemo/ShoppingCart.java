@@ -21,7 +21,7 @@ public class ShoppingCart extends Page {
     @FindBy(id = "checkout")
     WebElement checkoutButton;
 
-    public ShoppingCart (WebDriver driver) {
+    public ShoppingCart(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
     }

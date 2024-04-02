@@ -16,7 +16,7 @@ public class DemoSite extends Page {
     @FindBy(xpath = "//*[text()=\"Email Submission\"]/preceding-sibling::iframe")
     WebElement iframe;
 
-    public DemoSite (WebDriver driver) {
+    public DemoSite(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }

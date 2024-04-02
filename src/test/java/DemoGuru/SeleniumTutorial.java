@@ -10,7 +10,7 @@ import org.testng.Assert;
 
 public class SeleniumTutorial extends Page {
 
-    public SeleniumTutorial (WebDriver driver) {
+    public SeleniumTutorial(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }

@@ -10,7 +10,7 @@ public class ShoppingOverview extends Page {
     @FindBy(id = "finish")
     WebElement finishButton;
 
-    public ShoppingOverview (WebDriver driver) {
+    public ShoppingOverview(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
     }

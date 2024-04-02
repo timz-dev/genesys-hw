@@ -11,7 +11,7 @@ public class ShoppingComplete extends Page {
     @FindBy(className = "complete-header")
     WebElement completeHeader;
 
-    public ShoppingComplete (WebDriver driver) {
+    public ShoppingComplete(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
     }
