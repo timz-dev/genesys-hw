@@ -1,6 +1,7 @@
 package DemoGuru;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -11,6 +12,7 @@ import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class DemoSite extends Page {
     @FindBy(xpath = "//*[text()=\"Email Submission\"]/preceding-sibling::iframe")
@@ -26,34 +28,61 @@ public class DemoSite extends Page {
         WebElement cookiesIframe = driver.findElement(cookiesIframeLocator);
         this.waitForElementVisible(cookiesIframeLocator, 10);
 
-        WebElement acceptCookiesButton = driver.switchTo().frame(cookiesIframe).findElement(By.id("save"));
-
-        acceptCookiesButton.click();
-        driver.switchTo().defaultContent();
+        Stream<Runnable> cookiesFunctions = Stream.of(
+                () -> {
+                    driver.findElement(By.id("save")).click();
+                }
+        );
+        Utilities.executeFunctionsInFrame(driver, cookiesIframe, cookiesFunctions);
     }
     public void clickOnImageInIframe() {
-        driver.switchTo().frame(this.iframe).findElement(By.tagName("img")).click();
-        driver.switchTo().defaultContent();
+        Stream<Runnable> functions = Stream.of(
+                () -> {
+                    driver.findElement(By.tagName("img")).click();
+                }
+        );
+        Utilities.executeFunctionsInFrame(driver, this.iframe, functions);
     }
 
     public SeleniumTutorial navigateToSeleniumTutorial() {
-        WebElement testingMenuItem = driver.findElement(By.xpath("//*[@id=\"rt-header\"]//*[contains(@class, \"rt-omega\")]/*[@class=\"menu-block\"]/ul/li/a[contains(text(), \"Testing\")]"));
+        WebElement testingMenuItem = driver.findElement(
+                By.xpath("//*[@id=\"rt-header\"]//*[contains(@class, \"rt-omega\")]" +
+                        "/*[@class=\"menu-block\"]/ul/li/a[contains(text(), \"Testing\")]"));
+
         Actions actions = new Actions(driver);
-        actions.moveToElement(testingMenuItem).build().perform();
-        WebElement subMenu = driver.findElement(By.xpath("//*[@id=\"rt-header\"]//*[contains(@class, \"rt-omega\")]/*[@class=\"menu-block\"]/ul/li//*[contains(text(), \"Selenium\")]"));
-        actions.moveToElement(subMenu).build().perform();
-        actions.click().build().perform();
+        actions
+                .moveToElement(testingMenuItem);
+        WebElement subMenu = driver.findElement(
+                By.xpath("//*[@id=\"rt-header\"]//*[contains(@class, \"rt-omega\")]" +
+                        "/*[@class=\"menu-block\"]/ul/li//*[contains(text(), \"Selenium\")]"));
+        actions
+                .moveToElement(subMenu);
+        actions
+                .click()
+                .build()
+                .perform();
 
-        By googleAdsLocator = By.xpath("//iframe[contains(@id, \"google_ads_iframe\")]");
-        this.waitForElementVisible(googleAdsLocator, 10);
+        try {
+            By googleAdsLocator = By.xpath("//iframe[contains(@id, \"google_ads_iframe\")]");
+            this.waitForElementVisible(googleAdsLocator, 10);
 
-        WebElement googleAdsIframe = driver.findElement(googleAdsLocator);
-        WebElement advertisementIframe = driver.switchTo().frame(googleAdsIframe).findElement(By.id("ad_iframe"));
+            WebElement googleAdsIframe = driver.findElement(googleAdsLocator);
+            Stream<Runnable> googleAdsFunctions = Stream.of(
+                    () -> {
+                        WebElement advertisementIframe = driver.findElement(By.id("ad_iframe"));
 
-        WebElement closeAdButton = driver.switchTo().frame(advertisementIframe).findElement(By.id("dismiss-button"));
-        closeAdButton.click();
-
-        driver.switchTo().defaultContent();
+                        Stream<Runnable> advertisementFunctions = Stream.of(
+                                () -> {
+                                    driver.findElement(By.id("dismiss-button")).click();
+                                }
+                        );
+                        Utilities.executeFunctionsInFrame(driver, advertisementIframe, advertisementFunctions);
+                    }
+            );
+            Utilities.executeFunctionsInFrame(driver, googleAdsIframe, googleAdsFunctions);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
 
         return new SeleniumTutorial(driver);
     }

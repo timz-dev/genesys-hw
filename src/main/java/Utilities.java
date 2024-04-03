@@ -1,9 +1,12 @@
 import SauceDemo.Credential;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 public class Utilities {
     public static Credential parseCredentials() {
@@ -16,5 +19,11 @@ public class Utilities {
             e.printStackTrace();
         }
         return credential;
+    }
+
+    public static void executeFunctionsInFrame(WebDriver driver, WebElement iframeElement, Stream<Runnable> innerFunctions) {
+        driver.switchTo().frame(iframeElement);
+        innerFunctions.forEach(Runnable::run);
+        driver.switchTo().defaultContent();
     }
 }

@@ -3,10 +3,10 @@ package DemoGuru;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
-import org.testng.Assert;
+
+import java.util.stream.Stream;
 
 public class SeleniumTutorial extends Page {
 
@@ -18,10 +18,13 @@ public class SeleniumTutorial extends Page {
     public void handlePrivacyNotice() {
         By privacyIframeLocator = By.xpath("//*[@title=\"SP Consent Message\"]");
         this.waitForElementVisible(privacyIframeLocator, 10);
-
         WebElement privacyIframe = driver.findElement(privacyIframeLocator);
-        WebElement privacyAcceptButton = driver.switchTo().frame(privacyIframe).findElement( By.xpath("//*[@aria-label=\"Accept\"]"));
-        privacyAcceptButton.click();
-        driver.switchTo().defaultContent();
+        Stream<Runnable> privacyFunctions = Stream.of(
+                () -> {
+                    driver.findElement(By.xpath("//*[@aria-label=\"Accept\"]")).click();
+                }
+        );
+
+       Utilities.executeFunctionsInFrame(driver, privacyIframe, privacyFunctions);
     }
 }
