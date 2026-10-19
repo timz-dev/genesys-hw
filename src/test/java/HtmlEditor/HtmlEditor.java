@@ -1,11 +1,15 @@
 package HtmlEditor;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.testng.Assert;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class HtmlEditor extends Page {
 
@@ -15,7 +19,7 @@ public class HtmlEditor extends Page {
     @FindBy(xpath = "//*[contains(@data-cke-tooltip-text, \"Underline\")]")
     WebElement underlineTextButton;
 
-    @FindBy(xpath = "//*[contains(@aria-label, \"editing area\")]")
+    @FindBy(css = ".ck-editor__main > [role='textbox']")
     WebElement editorArea;
 
     public HtmlEditor(WebDriver driver) {
@@ -39,15 +43,16 @@ public class HtmlEditor extends Page {
         this.editorArea.sendKeys(input);
     }
     public void assertEditorFilledWithText(String input) {
-
-        String[] inputSplit = input.split(" ");
-        boolean containsAllTextPart = true;
-
-        for (String textPart : inputSplit) {
-            if (!this.editorArea.getText().contains(textPart)) {
-                containsAllTextPart = false;
-            }
+        String editorText = this.editorArea.getText();
+        for (String textPart : input.split(" ")) {
+            Assert.assertTrue(editorText.contains(textPart), "Editor text should contain: " + textPart);
         }
-        Assert.assertTrue(containsAllTextPart, "Editor Area Input is correct");
+    }
+
+    public void assertFormattedTexts(String cssSelector, String... texts) {
+        List<String> actual = this.editorArea.findElements(By.cssSelector(cssSelector)).stream()
+                .map(WebElement::getText)
+                .toList();
+        Assert.assertEquals(actual, Arrays.asList(texts), "Texts wrapped by " + cssSelector);
     }
 }

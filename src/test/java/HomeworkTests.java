@@ -27,8 +27,6 @@ public class HomeworkTests {
 
     @BeforeMethod
     public void setUp() {
-        // Chrome's password manager / leak-detection dialog ("Change your password")
-        // pops up after logging in with a known-leaked password and swallows clicks
         ChromeOptions options = new ChromeOptions();
         options.setExperimentalOption("prefs", Map.of(
                 "credentials_enable_service", false,
@@ -46,7 +44,6 @@ public class HomeworkTests {
 
         Credential loginCredential = Utilities.parseCredentials("performance_glitch_user");
         login.fillLoginDetails(loginCredential);
-        // performance_glitch_user login takes ~5s, longer than the 5s page default
         Shopping shopping = login.navigateToShopping(15);
         String[] items = new String[]{"Sauce Labs Backpack", "Sauce Labs Fleece Jacket"};
         shopping.putItemsToCart(items);
@@ -106,6 +103,8 @@ public class HomeworkTests {
         htmlEditor.fillEditorArea(Keys.SPACE);
         htmlEditor.fillEditorArea(inputSplit[2]);
         htmlEditor.assertEditorFilledWithText(testInput);
+        htmlEditor.assertFormattedTexts("strong, b", inputSplit[0]);
+        htmlEditor.assertFormattedTexts("u", inputSplit[1]);
     }
 
     @Test
