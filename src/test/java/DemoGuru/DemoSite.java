@@ -8,10 +8,11 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
 import java.util.stream.Stream;
 
 public class DemoSite extends Page {
@@ -25,8 +26,10 @@ public class DemoSite extends Page {
 
     public void handleCookies() {
         By cookiesIframeLocator = By.className("faktor-iframe-wrapper");
+        if (!this.isElementVisibleWithin(cookiesIframeLocator, 5)) {
+            return;
+        }
         WebElement cookiesIframe = driver.findElement(cookiesIframeLocator);
-        this.waitForElementVisible(cookiesIframeLocator, 10);
 
         Stream<Runnable> cookiesFunctions = Stream.of(
                 () -> {
@@ -88,13 +91,22 @@ public class DemoSite extends Page {
     }
 
     public void assertNewTabIsOpenedWithTitle(String title) {
-        List<String> browserTabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(browserTabs.get(1));
+        String originalHandle = driver.getWindowHandle();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.numberOfWindowsToBe(2));
+        String newHandle = driver.getWindowHandles().stream()
+                .filter(handle -> !handle.equals(originalHandle))
+                .findFirst()
+                .orElseThrow();
 
-        Assert.assertEquals(driver.getTitle(), title);
-
-        driver.close();
-        driver.switchTo().window(browserTabs.get(0));
+        driver.switchTo().window(newHandle);
+        try {
+            wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("")));
+            Assert.assertEquals(driver.getTitle(), title);
+        } finally {
+            driver.close();
+            driver.switchTo().window(originalHandle);
+        }
     }
 
 }

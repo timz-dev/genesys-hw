@@ -9,8 +9,11 @@ import java.util.stream.Stream;
 public class Utilities {
     public static void executeFunctionsInFrame(WebDriver driver, WebElement iframeElement, Stream<Runnable> innerFunctions) {
         driver.switchTo().frame(iframeElement);
-        innerFunctions.forEach(Runnable::run);
-        driver.switchTo().defaultContent();
+        try {
+            innerFunctions.forEach(Runnable::run);
+        } finally {
+            driver.switchTo().parentFrame();
+        }
     }
 
     public static void removeIframe(WebDriver driver, WebElement iframeElement) {

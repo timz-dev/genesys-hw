@@ -8,6 +8,7 @@ import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -32,6 +33,7 @@ public class HomeworkTests {
                 "credentials_enable_service", false,
                 "profile.password_manager_enabled", false,
                 "profile.password_manager_leak_detection", false));
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         driver = new ChromeDriver(options);
         logger.info("WebDriver initialized.");
     }
@@ -114,11 +116,14 @@ public class HomeworkTests {
         demoSite.handleCookies();
         demoSite.clickOnImageInIframe();
 
-        String newTabTitle = "Selenium Live Project: FREE Real Time Project for Practice";
+        // requested title "Selenium Live Project: FREE Real Time Project for Practice" changed on the live site
+        String newTabTitle = "Selenium Live Project for Practice";
         demoSite.assertNewTabIsOpenedWithTitle(newTabTitle);
 
         SeleniumTutorial seleniumTutorial = demoSite.navigateToSeleniumTutorial();
         seleniumTutorial.handlePrivacyNotice();
+        // requested red "Join Now" button does not exist anymore, changed to the red "Submit" button after "Join our FREE Course"
+        seleniumTutorial.assertSubmitButtonIsDisplayedAfterFreeCourseText();
     }
 
     @Test
