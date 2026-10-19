@@ -1,12 +1,12 @@
-package SauceDemo;
+package com.genesys.hw.pages.saucedemo;
 
+import com.genesys.hw.models.PersonalInformation;
+import com.genesys.hw.pages.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
-public class ShoppingInformation extends Page {
+public class CheckoutInformationPage extends BasePage {
     @FindBy(id = "first-name")
     WebElement firstNameInput;
     @FindBy(id = "last-name")
@@ -15,17 +15,19 @@ public class ShoppingInformation extends Page {
     WebElement postalCodeInput;
     @FindBy(id = "continue")
     WebElement continueButton;
-    public ShoppingInformation(WebDriver driver) {
-        super(driver);
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
+
+    public CheckoutInformationPage(WebDriver driver) {
+        super(driver, 5);
     }
 
     public void fillFirstName(String firstName) {
         this.firstNameInput.sendKeys(firstName);
     }
+
     public void fillLastName(String lastName) {
         this.lastNameInput.sendKeys(lastName);
     }
+
     public void fillPostalCode(int postalCode) {
         this.postalCodeInput.sendKeys(Integer.toString(postalCode));
     }
@@ -36,8 +38,8 @@ public class ShoppingInformation extends Page {
         this.fillPostalCode(personalInformation.getPostalCode());
     }
 
-    public ShoppingOverview navigateToShoppingOverview(PersonalInformation personalInformation) {
+    public CheckoutOverviewPage navigateToCheckoutOverview() {
         this.continueButton.click();
-        return new ShoppingOverview(driver);
+        return new CheckoutOverviewPage(driver);
     }
 }

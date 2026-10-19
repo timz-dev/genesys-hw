@@ -1,4 +1,4 @@
-package SauceDemo;
+package com.genesys.hw.models;
 
 public class PersonalInformation {
     private String firstName;

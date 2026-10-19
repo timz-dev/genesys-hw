@@ -1,4 +1,4 @@
-package JsonPlaceholder;
+package com.genesys.hw.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
