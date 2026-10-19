@@ -2,7 +2,9 @@ import DemoGuru.DemoSite;
 import DemoGuru.SeleniumTutorial;
 import HtmlEditor.HtmlEditor;
 import SauceDemo.*;
+import JsonPlaceholder.User;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
@@ -132,17 +134,13 @@ public class HomeworkTests {
 
         Response response = RestAssured.get("/users");
         Assert.assertEquals(response.getStatusCode(), 200, "Unexpected status code");
+        Assert.assertTrue(response.getContentType().contains(ContentType.JSON.toString()), "Unexpected content type");
 
         JsonPath jsonPath = response.jsonPath();
-        logger.info(jsonPath.getList("$"));
-        List<Object> users = jsonPath.getList("$");
+        List<User> users = jsonPath.getList("$", User.class);
 
-        int index = 0;
-        for (Object user : users) {
-            List<String> names = jsonPath.getList("name");
-            List<String> emails = jsonPath.getList("email");
-            System.out.println(names.get(index) + " | " + emails.get(index));
-            index++;
+        for (User user : users) {
+            logger.info(user.getName() + " | " + user.getEmail());
         }
 
         String firstEmail = jsonPath.getString("[0].email");
