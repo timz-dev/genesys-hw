@@ -38,6 +38,10 @@ public class Login extends Page {
         this.clickLogin();
         return new Shopping(driver);
     }
+    public Shopping navigateToShopping (int timeoutSeconds) {
+        this.clickLogin();
+        return new Shopping(driver, timeoutSeconds);
+    }
 
     public void assertErrorMessageIsCorrect(String messageText) {
         Assert.assertEquals(this.errorMessageContainer.getText(), messageText);

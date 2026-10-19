@@ -37,7 +37,8 @@ public class HomeworkTests {
 
         Credential loginCredential = Utilities.parseCredentials();
         login.fillLoginDetails(loginCredential);
-        Shopping shopping = login.navigateToShopping();
+        // performance_glitch_user login takes ~5s, longer than the 5s page default
+        Shopping shopping = login.navigateToShopping(15);
         String[] items = new String[]{"Sauce Labs Backpack", "Sauce Labs Fleece Jacket"};
         shopping.putItemsToCart(items);
         shopping.assertBadgeNumberIsCorrect(items.length);
@@ -57,7 +58,7 @@ public class HomeworkTests {
         ShoppingOverview shoppingOverview = shoppingInformation.navigateToShoppingOverview(personalInformation);
 
         ShoppingComplete shoppingComplete = shoppingOverview.navigateToShoppingComplete();
-        shoppingComplete.assertShoppingCompleteHeaderIsCorrect("Thank you for your order");
+        shoppingComplete.assertShoppingCompleteHeaderIsCorrect("Thank you for your order!");
     }
 
     @Test

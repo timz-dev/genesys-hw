@@ -24,8 +24,12 @@ public class Shopping extends Page{
     WebElement footer;
 
     public Shopping(WebDriver driver) {
+        this(driver, 5);
+    }
+
+    public Shopping(WebDriver driver, int timeoutSeconds) {
         super(driver);
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, timeoutSeconds), this);
     }
 
     public void putItemsToCart (String[] items) {

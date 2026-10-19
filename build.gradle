@@ -28,10 +28,11 @@ ext {
 }
 
 test {
-    jvmArgs([
-        "-ea",
-        "-Dwebdriver.chrome.driver=${project.ext.chromedriverLocation}"
-    ])
+    jvmArgs "-ea"
+    // ponytail: Selenium Manager auto-downloads chromedriver; env var is optional override
+    if (project.ext.chromedriverLocation) {
+        jvmArgs "-Dwebdriver.chrome.driver=${project.ext.chromedriverLocation}"
+    }
     useTestNG() {
         useDefaultListeners = true
     }
