@@ -1,5 +1,6 @@
 package com.genesys.hw.pages.saucedemo;
 
+import com.genesys.hw.Timeouts;
 import com.genesys.hw.models.Credential;
 import com.genesys.hw.pages.BasePage;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 public class LoginPage extends BasePage {
     public static final String URL = "https://www.saucedemo.com/";
 
+    // region Locators
     @FindBy(id = "user-name")
     WebElement usernameInput;
     @FindBy(id = "password")
@@ -17,9 +19,10 @@ public class LoginPage extends BasePage {
     WebElement loginButton;
     @FindBy(className = "error-message-container")
     WebElement errorMessageContainer;
+    // endregion
 
     public LoginPage(WebDriver driver) {
-        super(driver, 5);
+        super(driver, Timeouts.SHORT);
     }
 
     public LoginPage open() {
@@ -45,13 +48,13 @@ public class LoginPage extends BasePage {
     }
 
     public InventoryPage loginAs(Credential credential) {
-        return this.loginAs(credential, 5);
+        return this.loginAs(credential, Timeouts.SHORT);
     }
 
-    public InventoryPage loginAs(Credential credential, int timeoutSeconds) {
+    public InventoryPage loginAs(Credential credential, Timeouts timeout) {
         this.fillLoginDetails(credential);
         this.clickLogin();
-        return new InventoryPage(driver, timeoutSeconds);
+        return new InventoryPage(driver, timeout);
     }
 
     public String getErrorText() {

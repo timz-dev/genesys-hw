@@ -11,6 +11,7 @@ import java.util.List;
 public class HtmlEditorPage extends BasePage {
     public static final String URL = "https://onlinehtmleditor.dev";
 
+    // region Locators
     @FindBy(xpath = "//*[contains(@data-cke-tooltip-text, \"Bold\")]")
     WebElement boldTextButton;
 
@@ -19,6 +20,7 @@ public class HtmlEditorPage extends BasePage {
 
     @FindBy(css = ".ck-editor__main > [role='textbox']")
     WebElement editorArea;
+    // endregion
 
     public HtmlEditorPage(WebDriver driver) {
         super(driver);

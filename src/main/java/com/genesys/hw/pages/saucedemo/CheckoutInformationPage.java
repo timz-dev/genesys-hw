@@ -1,5 +1,6 @@
 package com.genesys.hw.pages.saucedemo;
 
+import com.genesys.hw.Timeouts;
 import com.genesys.hw.models.PersonalInformation;
 import com.genesys.hw.pages.BasePage;
 import org.openqa.selenium.WebDriver;
@@ -7,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 public class CheckoutInformationPage extends BasePage {
+    // region Locators
     @FindBy(id = "first-name")
     WebElement firstNameInput;
     @FindBy(id = "last-name")
@@ -15,9 +17,10 @@ public class CheckoutInformationPage extends BasePage {
     WebElement postalCodeInput;
     @FindBy(id = "continue")
     WebElement continueButton;
+    // endregion
 
     public CheckoutInformationPage(WebDriver driver) {
-        super(driver, 5);
+        super(driver, Timeouts.SHORT);
     }
 
     public void fillFirstName(String firstName) {

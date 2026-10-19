@@ -1,5 +1,6 @@
 package com.genesys.hw.pages;
 
+import com.genesys.hw.Timeouts;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
@@ -10,28 +11,26 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
 public abstract class BasePage {
     protected final WebDriver driver;
 
     protected BasePage(WebDriver driver) {
-        this(driver, 10);
+        this(driver, Timeouts.DEFAULT);
     }
 
-    protected BasePage(WebDriver driver, int timeoutSeconds) {
+    protected BasePage(WebDriver driver, Timeouts timeout) {
         this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, timeoutSeconds), this);
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, timeout.seconds()), this);
     }
 
-    protected void waitForElementVisible(By locator, int timeoutInSeconds) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
+    protected void waitForElementVisible(By locator, Timeouts timeout) {
+        WebDriverWait wait = new WebDriverWait(driver, timeout.duration());
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    protected boolean isElementVisibleWithin(By locator, int timeoutInSeconds) {
+    protected boolean isElementVisibleWithin(By locator, Timeouts timeout) {
         try {
-            this.waitForElementVisible(locator, timeoutInSeconds);
+            this.waitForElementVisible(locator, timeout);
             return true;
         } catch (TimeoutException e) {
             return false;
