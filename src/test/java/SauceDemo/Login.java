@@ -43,8 +43,12 @@ public class Login extends Page {
         return new Shopping(driver, timeoutSeconds);
     }
 
+    public String getErrorText() {
+        return this.errorMessageContainer.getText();
+    }
+
     public void assertErrorMessageIsCorrect(String messageText) {
-        Assert.assertEquals(this.errorMessageContainer.getText(), messageText);
+        Assert.assertEquals(this.getErrorText(), messageText);
     }
 
 

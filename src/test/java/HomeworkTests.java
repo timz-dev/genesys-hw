@@ -10,10 +10,12 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class HomeworkTests {
     private static final Logger logger = LogManager.getLogger(HomeworkTests.class);
@@ -25,7 +27,14 @@ public class HomeworkTests {
 
     @BeforeMethod
     public void setUp() {
-        driver = new ChromeDriver();
+        // Chrome's password manager / leak-detection dialog ("Change your password")
+        // pops up after logging in with a known-leaked password and swallows clicks
+        ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("prefs", Map.of(
+                "credentials_enable_service", false,
+                "profile.password_manager_enabled", false,
+                "profile.password_manager_leak_detection", false));
+        driver = new ChromeDriver(options);
         logger.info("WebDriver initialized.");
     }
 
@@ -35,7 +44,7 @@ public class HomeworkTests {
 
         Login login = new Login(driver);
 
-        Credential loginCredential = Utilities.parseCredentials();
+        Credential loginCredential = Utilities.parseCredentials("performance_glitch_user");
         login.fillLoginDetails(loginCredential);
         // performance_glitch_user login takes ~5s, longer than the 5s page default
         Shopping shopping = login.navigateToShopping(15);
@@ -69,17 +78,13 @@ public class HomeworkTests {
         login.clickLogin();
         login.assertErrorMessageIsCorrect("Epic sadface: Username is required");
 
-        Credential loginCredential = new Credential();
-
-        loginCredential.setUsername("standard_user");
-        loginCredential.setPassword("secret_sauce");
-
+        Credential loginCredential = Utilities.parseCredentials("standard_user");
         login.fillLoginDetails(loginCredential);
         Shopping shopping = login.navigateToShopping();
         shopping.scrollToBottom();
 
-        // using 2024, instead of 2023
-        String[] footerItems = new String[]{"2024", "Terms of Service"};
+        String footerYear = System.getProperty("footer.year", "2024");
+        String[] footerItems = new String[]{footerYear, "Terms of Service"};
         shopping.assertFooterContains(footerItems);
     }
 

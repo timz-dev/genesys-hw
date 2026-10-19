@@ -1,4 +1,5 @@
 import SauceDemo.Credential;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -6,15 +7,20 @@ import org.openqa.selenium.WebElement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class Utilities {
-    public static Credential parseCredentials() {
+    public static Credential parseCredentials(String user) {
         try (InputStream json = Utilities.class.getResourceAsStream("/credential.json")) {
             if (json == null) {
                 throw new IllegalStateException("credential.json not found on classpath");
             }
-            return new ObjectMapper().readValue(json, Credential.class);
+            Credential credential = new ObjectMapper().readValue(json, new TypeReference<Map<String, Credential>>() {}).get(user);
+            if (credential == null) {
+                throw new IllegalArgumentException("No credentials for user: " + user);
+            }
+            return credential;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
